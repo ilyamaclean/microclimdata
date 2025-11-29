@@ -257,6 +257,14 @@ find_pai <- function(ndvi) {
     .Call(`_microclimdata_find_pai`, ndvi)
 }
 
+leafrcpp <- function(lref, pai, gref, x, albin) {
+    .Call(`_microclimdata_leafrcpp`, lref, pai, gref, x, albin)
+}
+
+solve_gref <- function(lref, pai, x, albin, tol = 1e-6, max_iter = 100L) {
+    .Call(`_microclimdata_solve_gref`, lref, pai, x, albin, tol, max_iter)
+}
+
 find_gref <- function(lref, pai, x, albin) {
     .Call(`_microclimdata_find_gref`, lref, pai, x, albin)
 }

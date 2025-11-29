@@ -2318,6 +2318,7 @@ NumericMatrix find_pai(NumericMatrix ndvi)
     return pai;
 }
 // Function used to calculate leaf or ground reflectance solve
+// [[Rcpp::export]]
 double leafrcpp(double lref, double pai, double gref, double x, double albin)
 {
     // Base parameters
@@ -2349,7 +2350,8 @@ double leafrcpp(double lref, double pai, double gref, double x, double albin)
 // Root-finding function using the bisection method: leafr
 double solve_lref(double pai, double gref, double x, double albin, double tol = 1e-6, int max_iter = 100) {
     double lower = 0.0001;
-    double upper = 0.7499;
+    double upper = 0.6665;
+    // check whether between lower and mid or mid and upper
     double mid = 0.0;
     for (int iter = 0; iter < max_iter; iter++) {
         mid = (lower + upper) / 2.0;
@@ -2365,13 +2367,14 @@ double solve_lref(double pai, double gref, double x, double albin, double tol = 
             lower = mid; // Root lies in the upper half
         }
     }
-    mid = NA_REAL;
     return mid; // Should never reach here
 }
 // Root-finding function using the bisection method: gref
+// [[Rcpp::export]]
 double solve_gref(double lref, double pai, double x, double albin, double tol = 1e-6, int max_iter = 100) {
     double lower = 0.0001;
     double upper = 0.9999;
+    // check whether between lower and mid or mid and upper
     double mid = 0.0;
     for (int iter = 0; iter < max_iter; iter++) {
         mid = (lower + upper) / 2.0;
@@ -2387,7 +2390,6 @@ double solve_gref(double lref, double pai, double x, double albin, double tol = 
             lower = mid; // Root lies in the upper half
         }
     }
-    mid = NA_REAL;
     return mid; // Should never reach here
 }
 // [[Rcpp::export]]
