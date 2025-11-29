@@ -386,7 +386,8 @@ reflectance_calc <- function(alb, lai, x, plotprogress = TRUE, maxiter = 50, tol
   # check dims
   all_same <- compareGeom(lai, alb, x)
   if (all_same) {
-    lref <- x * 0 + 0.5
+    tst <- exp(-mean(as.vector(lai), na.rm = T))
+    lref <- (x * 0 + 0.5) * (1 - wgt) + wgt * alb
     gref <- x * 0 + 0.15
     mxdif <- tol * 10
     paim <- as.matrix(lai, wide = TRUE)
@@ -394,10 +395,17 @@ reflectance_calc <- function(alb, lai, x, plotprogress = TRUE, maxiter = 50, tol
     albm <- as.matrix(alb, wide = TRUE)
     itr <- 1
     while (mxdif > tol) {
-      gref2 <- .rast(find_gref(as.matrix(lref, wide = TRUE), paim, xm, albm), x)
-      gref2 <- .fillna(gref2, x, zerotoNA = FALSE)
-      lref2 <- .rast(find_lref(paim, as.matrix(gref, wide = TRUE), xm, albm), x)
-      lref2 <- .fillna(lref2, x, zerotoNA=FALSE)
+      if (tst < 0.5) {
+        lref2 <- .rast(find_lref(paim, as.matrix(gref, wide = TRUE), xm, albm), x)
+        lref2 <- .fillna(lref2, x, zerotoNA = FALSE)
+        gref2 <- .rast(find_gref(as.matrix(lref2, wide = TRUE), paim, xm, albm), x)
+        gref2 <- .fillna(gref2, x, zerotoNA = FALSE)
+      } else {
+        gref2 <- .rast(find_gref(as.matrix(lref, wide = TRUE), paim, xm, albm), x)
+        gref2 <- .fillna(gref2, x, zerotoNA = FALSE)
+        lref2 <- .rast(find_lref(paim, as.matrix(gref, wide = TRUE), xm, albm), x)
+        lref2 <- .fillna(lref2, x, zerotoNA=FALSE)
+      }
       gref <- bwgt * gref + (1 - bwgt) * gref2
       lref <- bwgt * lref + (1 - bwgt) * lref2
       mxdif1 <- mean(abs(as.vector(gref) - as.vector(gref2)), na.rm = TRUE)
