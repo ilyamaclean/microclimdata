@@ -2,7 +2,7 @@
 % Please edit documentation in R/ground.R
 \name{create_soilpoint}
 \alias{create_soilpoint}
-\title{Create vegetation inputs for grid model}
+\title{Create Soil inputs for grid model}
 \usage{
 create_soilpoint(
   soildata,
@@ -50,7 +50,7 @@ an object of class `groundparams`, namely a list of the following objects:
 }
 }
 \description{
-Creates an object of class vegparams used as an input to `micropoint`
+Creates an object of class soilparams used as an input to `micropoint`
 }
 \details{
 If `lat` and `long` are unspecified, point data are selelected for

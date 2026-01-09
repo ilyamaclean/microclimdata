@@ -2390,6 +2390,7 @@ double solve_gref(double lref, double pai, double x, double albin, double tol = 
             lower = mid; // Root lies in the upper half
         }
     }
+    mid = NA_REAL;
     return mid; // Should never reach here
 }
 // [[Rcpp::export]]

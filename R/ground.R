@@ -464,9 +464,9 @@ create_soilgrid <- function(soildata, refldata, landcover, water = 80) {
   class(soilp) <- "soilcharac"
   return(soilp)
 }
-#' @title Create vegetation inputs for grid model
+#' @title Create Soil inputs for grid model
 #'
-#' @description Creates an object of class vegparams used as an input to `micropoint`
+#' @description Creates an object of class soilparams used as an input to `micropoint`
 #'
 #' @param soildata a multilayer SpatRaster of soil data as returned by [soildata_download()].
 #' @param refldata a list of ground and leaf reflectances as returned by [reflectance_calc()].
