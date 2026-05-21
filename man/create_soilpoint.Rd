@@ -2,7 +2,7 @@
 % Please edit documentation in R/ground.R
 \name{create_soilpoint}
 \alias{create_soilpoint}
-\title{Create Soil inputs for grid model}
+\title{Create Soil inputs for point model}
 \usage{
 create_soilpoint(
   soildata,

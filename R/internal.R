@@ -224,7 +224,7 @@
             min(y)-1.9047/2,max(y)+1.9047/2)
     ri<-rast(a)
     ext(ri)<-eo
-    crs(r)<-"EPSG:4326"
+    crs(ri)<-"EPSG:4326"
     ro[[yr]]<-ri
   }
   tta<-tta[-1]
@@ -283,9 +283,12 @@
   te<-(tmxd+tmnd)/2
   tmxd<-te+0.5*dtr
   tmnd<-te-0.5*dtr
-  year<-tmet$year[s]+1900
-  mth<-tmet$mon[s]+1
-  day<-tmet$mday
+  tmed <- matrix(as.numeric(tmet[s]), ncol = 4, byrow = TRUE)
+  tmed <- apply(tmed, 1, mean)
+  tmed <- as.POSIXlt(tmed, origin = "1970-01-01 00:00", tz = "UTC")
+  year<-tmed$year+1900
+  mth<-tmed$mon+1
+  day<-tmed$mday
   if (lon > 180) lon<-lon-360
   tc<-hourlytempv(tmnd-273.15,tmxd-273.15,year,mth,day,lat,lon)
   tmed<-tmet[s]

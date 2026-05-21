@@ -585,31 +585,37 @@ NumericVector hourlytempv(NumericVector tmn, NumericVector tmx,
     int nrow = tmn.size();
     NumericMatrix thour(nrow, 24);
     for (int i = 0; i < nrow; ++i) {
-        // Calculate jd
         int jd = juldayCpp(year[i], month[i], day[i]);
-        // Calculate sunrise time
         double dl = daylengthCpp(jd, lat);
         double stt = soltimeCpp(jd, 0, lon);
-        double sr = stt + 12 - 0.5 * dl;
-        if (sr > 24) sr = sr - 24;
-        if (sr > 0) { // Sunrise in current day
-            double tmnn = tmn[i + 1];
-            if (i == (nrow - 1)) tmnn = tmn[nrow - 1];
-            thour(i, _) = tempintdayCpp(tmn[i], tmnn, tmx[i], dl, stt, lat, lon, srte);
+        double sr = stt + 12.0 - 0.5 * dl;
+        if (sr > 24.0) sr -= 24.0;
+        if (sr > 0.0) {
+            // Sunrise in current day.
+            // Use next day's minimum if available; otherwise reuse current day's minimum.
+            double tmnn = (i < nrow - 1) ? tmn[i + 1] : tmn[i];
+
+            thour(i, _) = tempintdayCpp(
+                tmn[i], tmnn, tmx[i],
+                dl, stt, lat, lon, srte
+            );
         }
-        else { // sunrise in previous day
-            double tmnp = tmn[0];
-            if (i > 0) tmnp = tmn[i - 1];
-            thour(i, _) = tempintdayCpp(tmnp, tmn[i], tmx[i], dl, stt, lat, lon, srte);
+        else {
+            // Sunrise in previous day.
+            // Use previous day's minimum if available; otherwise reuse current day's minimum.
+            double tmnp = (i > 0) ? tmn[i - 1] : tmn[i];
+
+            thour(i, _) = tempintdayCpp(
+                tmnp, tmn[i], tmx[i],
+                dl, stt, lat, lon, srte
+            );
         }
     }
-    NumericVector thourv(nrow*24);
-    // Flatten the matrix row-wise
+    NumericVector thourv(nrow * 24);
     int index = 0;
     for (int i = 0; i < nrow; ++i) {
         for (int j = 0; j < 24; ++j) {
-            thourv[index] = thour(i, j);
-            ++index;
+            thourv[index++] = thour(i, j);
         }
     }
     return thourv;
@@ -2348,6 +2354,7 @@ double leafrcpp(double lref, double pai, double gref, double x, double albin)
     return out;
 }
 // Root-finding function using the bisection method: leafr
+// [[Rcpp::export]]
 double solve_lref(double pai, double gref, double x, double albin, double tol = 1e-6, int max_iter = 100) {
     double lower = 0.0001;
     double upper = 0.6665;

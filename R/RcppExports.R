@@ -261,6 +261,10 @@ leafrcpp <- function(lref, pai, gref, x, albin) {
     .Call(`_microclimdata_leafrcpp`, lref, pai, gref, x, albin)
 }
 
+solve_lref <- function(pai, gref, x, albin, tol = 1e-6, max_iter = 100L) {
+    .Call(`_microclimdata_solve_lref`, pai, gref, x, albin, tol, max_iter)
+}
+
 solve_gref <- function(lref, pai, x, albin, tol = 1e-6, max_iter = 100L) {
     .Call(`_microclimdata_solve_gref`, lref, pai, x, albin, tol, max_iter)
 }
